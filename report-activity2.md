@@ -2,6 +2,8 @@
 
 Implementação em [activity2-dumbbell.cc](activity2-dumbbell.cc). Resultados em [results](results).
 
+Para gerar os gráficos a partir dos arquivos `.dat`, usar [plot_activity2.py](plot_activity2.py).
+
 ## 2) Topologia
 
 Atividade 2 considera apenas a topologia dumbbell da figura:
@@ -65,3 +67,13 @@ Resumo numérico:
 - Reno apresentou oscilação mais forte de janela ao longo do tempo.
 - Com UDP fixo em 8 Mbps no gargalo de 10 Mbps, ambos disputam a banda residual, e o Cubic aproveitou melhor essa banda.
 - Em termos práticos, o Cubic foi mais eficiente para manter boa-vazão do fluxo TCP sob concorrência constante de UDP.
+
+## Gráficos
+
+### Throughput TCP no tempo
+
+![Comparação de throughput entre Reno e Cubic](results/activity2-throughput-comparison.png)
+
+### Evolução da janela de congestionamento (CWND)
+
+![Comparação de CWND entre Reno e Cubic](results/activity2-cwnd-comparison.png)
