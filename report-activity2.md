@@ -1,60 +1,67 @@
-# Atividade 2 - Dumbbell com TCP Reno e Cubic
+# Exercício 1 - Resumo (Itens 2 a 6)
 
-## Objetivo
+Implementação em [activity2-dumbbell.cc](activity2-dumbbell.cc). Resultados em [results](results).
 
-Implementar em ns-3 uma topologia dumbbell com dois fluxos concorrentes:
+## 2) Topologia
 
-- um fluxo TCP com taxa oferecida de 5 Mbps;
-- um fluxo UDP de fundo com taxa oferecida de 8 Mbps.
+Atividade 2 considera apenas a topologia dumbbell da figura:
 
-O enlace entre os roteadores foi configurado com 10 Mbps e 20 ms de atraso, e os enlaces de acesso com 10 Mbps e 40 ms de atraso.
+- enlaces de acesso: 10 Mbps, 40 ms;
+- enlace entre roteadores: 10 Mbps, 20 ms.
+- lados esquerdo e direito com 2 hosts cada (S1, S2 e D1, D2);
+- roteamento IPv4 global habilitado para permitir comunicação fim a fim.
 
-## Implementação
+## 3) Tráfego de fundo UDP
 
-O cenário foi implementado em [activity2-dumbbell.cc](activity2-dumbbell.cc).
+Foi configurado um fluxo UDP de fundo com:
 
-O programa usa:
+- taxa: 8 Mbps;
+- duração: toda a simulação.
+- origem no lado esquerdo e destino no lado direito;
+- objetivo: ocupar parte fixa da banda do gargalo para criar concorrência com o TCP.
 
-- `PointToPointDumbbellHelper` para montar a topologia;
-- `OnOffHelper` para gerar tráfego TCP e UDP constantes;
-- `PacketSinkHelper` para receber os fluxos;
-- trace de `CongestionWindow` para registrar a evolução da janela TCP;
-- amostragem periódica do throughput do fluxo TCP em arquivo texto.
+## 4) S1 com TCP Reno (5 Mbps) concorrendo com UDP
 
-O fluxo TCP foi executado duas vezes, uma com `TcpNewReno` e outra com `TcpCubic`.
+Foi configurado fluxo TCP em S1 com taxa oferecida de 5 Mbps, concorrendo com o UDP.
 
-## Saídas geradas
+Configuração de medição:
 
-Cada execução gera dois arquivos em `results/`:
+- tempo total de simulação: 20 s;
+- início dos fluxos: 1 s;
+- amostragem de throughput: 0,1 s;
+- medição de janela via trace de `CongestionWindow` no socket do transmissor S1.
 
-- `*-throughput.dat` com o throughput do fluxo TCP ao longo do tempo;
-- `*-cwnd.dat` com a evolução da janela de congestionamento.
+Saídas:
 
-No repositório, os arquivos finais ficam em [results](results).
+- throughput no tempo: [results/activity2-reno-throughput.dat](results/activity2-reno-throughput.dat)
+- evolução da janela (CWND): [results/activity2-reno-cwnd.dat](results/activity2-reno-cwnd.dat)
 
-## Resultado observado
+Resumo numérico:
 
-Foram executadas duas simulações, uma com `TcpNewReno` e outra com `TcpCubic`. Os principais valores observados foram:
+- bytes TCP recebidos: 6.408.000
+- throughput médio TCP: 2,70 Mbps
+- série temporal de throughput indica estabilização próxima da banda residual após fase transitória inicial.
 
-| Variante | Bytes recebidos no TCP | Throughput médio | Pico de CWND | CWND final |
-| --- | ---: | ---: | ---: | ---: |
-| Reno | 6.408.000 | 2,70 Mbps | 346.072 bytes | 143.755 bytes |
-| Cubic | 7.764.000 | 3,27 Mbps | 130.320 bytes | 128.872 bytes |
+## 5) Mesmo estudo com TCP Cubic
 
-O comportamento observado foi o seguinte:
+Mesmo cenário, trocando a variante TCP para Cubic.
 
-- o fluxo UDP ocupa uma fração fixa da capacidade do enlace compartilhado;
-- o fluxo TCP disputa o restante da banda;
-- `TCP Reno` apresentou maior variação da janela de congestionamento, mas convergiu para um throughput médio menor;
-- `TCP Cubic` entregou maior throughput médio no mesmo cenário, aproximadamente 21% acima do Reno.
+Todos os demais parâmetros foram mantidos iguais ao item 4, mudando apenas o algoritmo de controle de congestionamento.
 
-Como o UDP mantém 8 Mbps em um gargalo de 10 Mbps, sobra cerca de 2 Mbps para o fluxo TCP. Assim, o throughput do TCP converge para valores próximos disso, com pequenas diferenças de estabilidade entre as variantes.
+Saídas:
 
-## Conclusão
+- throughput no tempo: [results/activity2-cubic-throughput.dat](results/activity2-cubic-throughput.dat)
+- evolução da janela (CWND): [results/activity2-cubic-cwnd.dat](results/activity2-cubic-cwnd.dat)
 
-A atividade mostra a diferença prática entre os algoritmos de controle de congestionamento:
+Resumo numérico:
 
-- `Reno` foi mais sensível às contenções do enlace e terminou com throughput médio inferior;
-- `Cubic` aproveitou melhor a banda residual e manteve maior boa-vazão média.
+- bytes TCP recebidos: 7.764.000
+- throughput médio TCP: 3,27 Mbps
+- curva de throughput mostra recuperação mais rápida após variações de fila/contensão.
 
-Em um cenário com tráfego UDP concorrente, `Cubic` produziu melhor desempenho médio para o fluxo TCP na topologia dumbbell configurada.
+## 6) Diferenças observadas
+
+- Cubic obteve maior throughput médio que Reno neste cenário (aprox. 21% a mais).
+- Reno apresentou oscilação mais forte de janela ao longo do tempo.
+- Com UDP fixo em 8 Mbps no gargalo de 10 Mbps, ambos disputam a banda residual, e o Cubic aproveitou melhor essa banda.
+- Em termos práticos, o Cubic foi mais eficiente para manter boa-vazão do fluxo TCP sob concorrência constante de UDP.
