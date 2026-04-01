@@ -59,6 +59,10 @@ Saídas:
 - throughput no tempo: [results/activity2-cubic-throughput.dat](results/activity2-cubic-throughput.dat)
 - evolução da janela (CWND): [results/activity2-cubic-cwnd.dat](results/activity2-cubic-cwnd.dat)
 
+Gráfico da Atividade 5 (Cubic):
+
+![Throughput TCP Cubic no tempo](results/activity2-cubic-throughput.png)
+
 Resumo numérico:
 
 - bytes TCP recebidos: 7.764.000
