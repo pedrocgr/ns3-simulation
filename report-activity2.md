@@ -38,6 +38,10 @@ Saídas:
 - throughput no tempo: [results/activity2-reno-throughput.dat](results/activity2-reno-throughput.dat)
 - evolução da janela (CWND): [results/activity2-reno-cwnd.dat](results/activity2-reno-cwnd.dat)
 
+Gráfico da Atividade 4 (Reno):
+
+![Throughput TCP Reno no tempo](results/activity2-reno-throughput.png)
+
 Resumo numérico:
 
 - bytes TCP recebidos: 6.408.000
