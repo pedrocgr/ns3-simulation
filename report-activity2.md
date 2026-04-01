@@ -11,7 +11,7 @@ O enlace entre os roteadores foi configurado com 10 Mbps e 20 ms de atraso, e os
 
 ## Implementação
 
-O cenário foi implementado em [scratch/activities/activity2-dumbbell.cc](scratch/activities/activity2-dumbbell.cc).
+O cenário foi implementado em [activity2-dumbbell.cc](activity2-dumbbell.cc).
 
 O programa usa:
 
@@ -30,7 +30,7 @@ Cada execução gera dois arquivos em `results/`:
 - `*-throughput.dat` com o throughput do fluxo TCP ao longo do tempo;
 - `*-cwnd.dat` com a evolução da janela de congestionamento.
 
-No repositório, os arquivos finais ficam em [scratch/activities/results](scratch/activities/results).
+No repositório, os arquivos finais ficam em [results](results).
 
 ## Resultado observado
 
